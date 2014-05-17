@@ -1,8 +1,12 @@
+import random
+
 import provider
 import tripler
+import researcher
 
-p = provider.Provider()
-p.run()
+behaviors = [provider.Provider(), tripler.Tripler(), researcher.Researcher()]
+#behaviors = [researcher.Researcher()]
 
-#t = tripler.Tripler()
-#t.run()
+for _ in xrange(20):
+    chosen_behavior = random.choice(behaviors)
+    chosen_behavior.run()

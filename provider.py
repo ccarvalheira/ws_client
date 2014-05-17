@@ -7,8 +7,12 @@ import pickle
 
 class Provider(object):
 
+    min_timedelta = 2
+    max_timedelta = 5
+    length_multiplier = 0.01 #in days
+
     def get_time(self, before):
-        return before + datetime.timedelta(seconds=random.choice(xrange(2,5)))
+        return before + datetime.timedelta(seconds=random.choice(xrange(self.min_timedelta,self.max_timedelta)))
             
 
     def run(self):
@@ -37,7 +41,7 @@ class Provider(object):
         
         before = datetime.datetime.now()
         #days = random.choice(xrange(1,2))
-        days = 0.001
+        days = self.length_multiplier
         end_time = before + datetime.timedelta(seconds=days*86400) #number of seconds in a day
         
         
@@ -49,8 +53,8 @@ class Provider(object):
         payload["metadata"] = "cenas"
         payload["name"] = "medicoes C"
         payload["datapoint_count"] = 0
-        payload["highest_ts"] = str(end_time)
-        payload["lowest_ts"] = str(before)
+        payload["highest_ts"] = str(end_time+datetime.timedelta(seconds=self.max_timedelta))
+        payload["lowest_ts"] = str(before-datetime.timedelta(seconds=self.max_timedelta))
         payload = json.dumps(payload)
 
         req = s.post("http://192.168.149.168/api/v1/dataset/", data=payload, headers=headers)
@@ -77,14 +81,15 @@ class Provider(object):
         print derived_dataset_f
         
         print str(before), str(end_time)
-        while before < end_time:
+        while before+datetime.timedelta(seconds=self.max_timedelta) < end_time:
             req.status_code = 1
             while req.status_code != 201:
                 payload = {}
                 payload["dataset"] = raw_dataset
                 payload["dimensions"] = {}
                 payload["dimensions"][c_dim] = random.choice(range(5,30))
-                new_time = self.get_time(before)
+                if req.status_code == 1: #meaning its a fresh iteration
+                    new_time = self.get_time(before)
                 payload["dimensions"]["/api/v1/dimension/1/"] = "'"+str(new_time)+"'"
                 before = new_time
                 payload = json.dumps(payload)
@@ -105,4 +110,6 @@ class Provider(object):
         print "task"
         print req.status_code
 
-
+p = Provider()
+while True:
+    p.run()
