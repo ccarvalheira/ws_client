@@ -57,22 +57,6 @@ class Provider(object):
         print req.status_code
         raw_dataset = req.headers["Location"].split("192.168.149.168")[1]
         print raw_dataset
-        print str(before), str(end_time)
-        while before < end_time:
-            req.status_code = 1
-            while req.status_code != 201:
-                payload = {}
-                payload["dataset"] = raw_dataset
-                payload["dimensions"] = {}
-                payload["dimensions"][c_dim] = random.choice(range(5,30))
-                new_time = self.get_time(before)
-                payload["dimensions"]["/api/v1/dimension/1/"] = "'"+str(new_time)+"'"
-                before = new_time
-                payload = json.dumps(payload)
-                req = s.post("http://192.168.149.168/api/v1/datapoint/", data=payload, headers=headers)
-                
-                print req.status_code, str(new_time)
-                #print req.text
         
         #criar dataset derivado
         payload = {}
@@ -91,6 +75,23 @@ class Provider(object):
         print req.status_code
         derived_dataset_f = req.headers["Location"].split("192.168.149.168")[1]
         print derived_dataset_f
+        
+        print str(before), str(end_time)
+        while before < end_time:
+            req.status_code = 1
+            while req.status_code != 201:
+                payload = {}
+                payload["dataset"] = raw_dataset
+                payload["dimensions"] = {}
+                payload["dimensions"][c_dim] = random.choice(range(5,30))
+                new_time = self.get_time(before)
+                payload["dimensions"]["/api/v1/dimension/1/"] = "'"+str(new_time)+"'"
+                before = new_time
+                payload = json.dumps(payload)
+                req = s.post("http://192.168.149.168/api/v1/datapoint/", data=payload, headers=headers)
+                
+                print req.status_code, str(new_time)
+                #print req.text
         
         #ctof
         payload = {}
