@@ -34,6 +34,13 @@ class Provider(object):
         with open("mean_2_sec.pck", "r") as f:
             mean_2_sec = pickle.loads(f.read())
         
+        
+        before = datetime.datetime.now()
+        #days = random.choice(xrange(1,2))
+        days = 0.001
+        end_time = before + datetime.timedelta(seconds=days*86400) #number of seconds in a day
+        
+        
         payload = {}
         payload["dimensions"] = [c_dim]
         payload["description"] = "medicoes de temperatura em C feitas na feup"
@@ -42,17 +49,15 @@ class Provider(object):
         payload["metadata"] = "cenas"
         payload["name"] = "medicoes C"
         payload["datapoint_count"] = 0
+        payload["highest_ts"] = str(end_time)
+        payload["lowest_ts"] = str(before)
         payload = json.dumps(payload)
 
         req = s.post("http://192.168.149.168/api/v1/dataset/", data=payload, headers=headers)
         print req.status_code
         raw_dataset = req.headers["Location"].split("192.168.149.168")[1]
         print raw_dataset
-
-        before = datetime.datetime.now()
-        #days = random.choice(xrange(1,2))
-        days = 0.1
-        end_time = before + datetime.timedelta(seconds=days*86400) #number of seconds in a day
+        print str(before), str(end_time)
         while before < end_time:
             req.status_code = 1
             while req.status_code != 201:
@@ -65,8 +70,8 @@ class Provider(object):
                 before = new_time
                 payload = json.dumps(payload)
                 req = s.post("http://192.168.149.168/api/v1/datapoint/", data=payload, headers=headers)
-            
-                print req.status_code
+                
+                print req.status_code, str(new_time)
                 #print req.text
         
         #criar dataset derivado
@@ -78,6 +83,8 @@ class Provider(object):
         payload["metadata"] = "cenas"
         payload["name"] = "medicoes F derivadas"
         payload["datapoint_count"] = 0
+        payload["highest_ts"] = str(end_time)
+        payload["lowest_ts"] = str(before)
         payload = json.dumps(payload)
 
         req = s.post("http://192.168.149.168/api/v1/dataset/", data=payload, headers=headers)
@@ -93,7 +100,7 @@ class Provider(object):
         payload = json.dumps(payload)
 
         req = s.post("http://192.168.149.168/api/v1/task/", data=payload, headers=headers)
-        print req.text
+        #print req.text
         print "task"
         print req.status_code
 
