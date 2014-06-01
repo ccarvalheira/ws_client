@@ -9,7 +9,7 @@ class Provider(object):
 
     min_timedelta = 2
     max_timedelta = 5
-    length_multiplier = 0.01 #in days
+    length_multiplier = 0.1 #in days
 
     def get_time(self, before):
         return before + datetime.timedelta(seconds=random.choice(xrange(self.min_timedelta,self.max_timedelta)))
@@ -57,9 +57,11 @@ class Provider(object):
         payload["lowest_ts"] = str(before-datetime.timedelta(seconds=self.max_timedelta))
         payload = json.dumps(payload)
 
-        req = s.post("http://192.168.149.168/api/v1/dataset/", data=payload, headers=headers)
+        req = s.post("http://localhost/api/v1/dataset/", data=payload, headers=headers)
         print req.status_code
-        raw_dataset = req.headers["Location"].split("192.168.149.168")[1]
+        if req.status_code != 200:
+	    print req.text
+        raw_dataset = req.headers["Location"].split("localhost")[1]
         print raw_dataset
         
         #criar dataset derivado
@@ -75,9 +77,9 @@ class Provider(object):
         payload["lowest_ts"] = str(before)
         payload = json.dumps(payload)
 
-        req = s.post("http://192.168.149.168/api/v1/dataset/", data=payload, headers=headers)
+        req = s.post("http://localhost/api/v1/dataset/", data=payload, headers=headers)
         print req.status_code
-        derived_dataset_f = req.headers["Location"].split("192.168.149.168")[1]
+        derived_dataset_f = req.headers["Location"].split("localhost")[1]
         print derived_dataset_f
         
         print str(before), str(end_time)
@@ -93,10 +95,10 @@ class Provider(object):
                 payload["dimensions"]["/api/v1/dimension/1/"] = "'"+str(new_time)+"'"
                 before = new_time
                 payload = json.dumps(payload)
-                req = s.post("http://192.168.149.168/api/v1/datapoint/", data=payload, headers=headers)
-                
+                req = s.post("http://localhost/api/v1/datapoint/", data=payload, headers=headers)
+                                
                 print req.status_code, str(new_time)
-                #print req.text
+                print req.text
         
         #ctof
         payload = {}
@@ -105,7 +107,7 @@ class Provider(object):
         payload["ordered_tasks"] = [mean_2_sec, ctof, ftok]
         payload = json.dumps(payload)
 
-        req = s.post("http://192.168.149.168/api/v1/task/", data=payload, headers=headers)
+        req = s.post("http://localhost/api/v1/task/", data=payload, headers=headers)
         #print req.text
         print "task"
         print req.status_code

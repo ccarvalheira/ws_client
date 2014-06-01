@@ -17,10 +17,10 @@ payload["description"] = "site fixe"
 payload["name"] = "FEUP"
 payload = json.dumps(payload)
 
-req = s.post("http://192.168.149.168/api/v1/site/", data=payload, headers=headers)
+req = s.post("http://localhost/api/v1/site/", data=payload, headers=headers)
 print req.status_code
 #print req.text
-new_site = req.headers["Location"].split("192.168.149.168")[1]
+new_site = req.headers["Location"].split("localhost")[1]
 print new_site
 
 with open("site.pck", "w") as f:
@@ -38,9 +38,11 @@ payload["site"] = new_site
 payload["start_date"] = str(datetime.datetime.now())
 payload = json.dumps(payload)
 
-req = s.post("http://192.168.149.168/api/v1/campaign/", data=payload, headers=headers)
+req = s.post("http://localhost/api/v1/campaign/", data=payload, headers=headers)
 print req.status_code
-new_campaign = req.headers["Location"].split("192.168.149.168")[1]
+if req.status_code != 201:
+    print req.text
+new_campaign = req.headers["Location"].split("localhost")[1]
 print new_campaign
 
 with open("campaign.pck", "w") as f:
@@ -58,10 +60,10 @@ payload["datatype"] = "Double"
 payload["name"] = "Centigrade"
 payload = json.dumps(payload)
 
-req = s.post("http://192.168.149.168/api/v1/dimension/", data=payload, headers=headers)
+req = s.post("http://localhost/api/v1/dimension/", data=payload, headers=headers)
 print req.text
 print req.status_code
-c_dim = req.headers["Location"].split("192.168.149.168")[1]
+c_dim = req.headers["Location"].split("localhost")[1]
 print c_dim
 
 with open("c_dim.pck", "w") as f:
@@ -76,9 +78,10 @@ payload["datatype"] = "Double"
 payload["name"] = "Farenheit"
 payload = json.dumps(payload)
     
-req = s.post("http://192.168.149.168/api/v1/dimension/", data=payload, headers=headers)
+req = s.post("http://localhost/api/v1/dimension/", data=payload, headers=headers)
 print req.status_code
-f_dim = req.headers["Location"].split("192.168.149.168")[1]
+print req.text
+f_dim = req.headers["Location"].split("localhost")[1]
 print f_dim
 
 with open("f_dim.pck", "w") as f:
@@ -94,9 +97,10 @@ payload["datatype"] = "Double"
 payload["name"] = "Kelvin"
 payload = json.dumps(payload)
 
-req = s.post("http://192.168.149.168/api/v1/dimension/", data=payload, headers=headers)
+req = s.post("http://localhost/api/v1/dimension/", data=payload, headers=headers)
 print req.status_code
-k_dim = req.headers["Location"].split("192.168.149.168")[1]
+print req.text
+k_dim = req.headers["Location"].split("localhost")[1]
 print k_dim
 
 with open("k_dim.pck", "w") as f:
@@ -116,9 +120,10 @@ payload["metadata"] = "cenas"
 payload["name"] = "C to F"
 payload = json.dumps(payload)
 
-req = s.post("http://192.168.149.168/api/v1/calculator/", data=payload, headers=headers)
+req = s.post("http://localhost/api/v1/calculator/", data=payload, headers=headers)
 print req.status_code
-ctof = req.headers["Location"].split("192.168.149.168")[1]
+print req.text
+ctof = req.headers["Location"].split("localhost")[1]
 print ctof
 
 with open("ctof.pck", "w") as f:
@@ -136,9 +141,10 @@ payload["metadata"] = "cenas"
 payload["name"] = "F to K"
 payload = json.dumps(payload)
 
-req = s.post("http://192.168.149.168/api/v1/calculator/", data=payload, headers=headers)
+req = s.post("http://localhost/api/v1/calculator/", data=payload, headers=headers)
 print req.status_code
-ftok = req.headers["Location"].split("192.168.149.168")[1]
+print req.text
+ftok = req.headers["Location"].split("localhost")[1]
 print ftok
 
 with open("ftok.pck", "w") as f:
@@ -154,9 +160,10 @@ payload["metadata"] = "cenas"
 payload["name"] = "Media 2 segundos"
 payload = json.dumps(payload)
 
-req = s.post("http://192.168.149.168/api/v1/aggregator/", data=payload, headers=headers)
+req = s.post("http://localhost/api/v1/aggregator/", data=payload, headers=headers)
 print req.status_code
-mean_2_sec = req.headers["Location"].split("192.168.149.168")[1]
+print req.text
+mean_2_sec = req.headers["Location"].split("localhost")[1]
 print mean_2_sec
 
 with open("mean_2_sec.pck", "w") as f:
